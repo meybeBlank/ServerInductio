@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Bean name="vo.test.UserInfo">
+    <userName value="张三"/>
+    <archiveID value="123"/>
+</Bean>
