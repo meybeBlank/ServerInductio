@@ -25,5 +25,12 @@ public class MyObservable extends Observable {
         notifyObservers("close");
     }
 
-
+    public void changeState(boolean auto){
+        setChanged();
+        if (auto) {
+            notifyObservers("aotu");
+        } else {
+            notifyObservers("unauto");
+        }
+    }
 }

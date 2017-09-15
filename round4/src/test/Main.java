@@ -18,5 +18,8 @@ public class Main {
 //
 //        myObservable.rollback();
 //        myObservable.close();
+
+        String sql = "UPDATE FUN_USERS SET USER_NAME = ? WHERE USER_MOBILE = ?";
+        DBHelper.getInstance().update(DBHelper.DB_USER_NAME,sql,null);
     }
 }

@@ -69,6 +69,7 @@ public class DBHelper {
                 myObservable = new MyObservable();
                 LOCAL_OBSERVER.set(myObservable);
             }
+
             myObservable.addObserver(new ConnectionObserver(conn));
 
             connectionMap.put(dbName, conn);
@@ -93,6 +94,48 @@ public class DBHelper {
         for (Connection conn :
                 values) {
             connectionMap.remove(conn);
+        }
+    }
+
+    /**
+     * 修改用户名
+     *
+     * @author fengzhen
+     * @version v1.0, 2017/9/4 14:05
+     */
+    public void update(String dbName, String sql, Object[] objects) {
+        PreparedStatement pstmt = null;
+        ResultSet resultSet = null;
+
+        try {
+            Connection conn = getConDb(dbName);
+
+            // 开启事务
+            conn.setAutoCommit(false);
+            LOCAL_OBSERVER.get().changeState(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, "冯真第一次修改");
+            pstmt.setObject(2, "18380460807");
+            pstmt.executeUpdate();
+//            int i = 12 / 0;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setObject(1, "冯真第二次修改");
+            pstmt.setObject(2, "18380460807");
+            pstmt.executeUpdate();
+
+            LOCAL_OBSERVER.get().commit();
+        } catch (Exception e) {
+            System.out.println("发生错误，回滚事务");
+//                conn.rollback();
+            LOCAL_OBSERVER.get().rollback();
+        } finally {
+            try {
+                close(null, resultSet, pstmt);
+                LOCAL_OBSERVER.get().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -14,11 +14,12 @@ import java.util.Observer;
 public class ConnectionObserver implements Observer {
 
     private Connection connection;
+    private boolean autoCommit = true;
 
     public ConnectionObserver(Connection connection) {
         this.connection = connection;
         try {
-            connection.setAutoCommit(false);
+            autoCommit = connection.getAutoCommit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -29,22 +30,28 @@ public class ConnectionObserver implements Observer {
         try {
             switch (o.toString()) {
                 case "commit":
-                    if (!connection.isClosed()) {
+                    if (!connection.isClosed() && !autoCommit) {
                         connection.commit();
+                        System.out.println(connection.toString() + "   提交");
                     }
-                    System.out.println(connection.toString() + "提交");
                     break;
                 case "rollback":
-                    if (!connection.isClosed()) {
+                    if (!connection.isClosed() && !autoCommit) {
                         connection.rollback();
+                        System.out.println(connection.toString() + "   回滚");
                     }
-                    System.out.println(connection.toString() + "回滚");
                     break;
                 case "close":
                     if (!connection.isClosed()) {
                         connection.close();
+                        System.out.println(connection.toString() + "    关闭");
                     }
-                    System.out.println(connection.toString() + "关闭");
+                    break;
+                case "auto":
+                    autoCommit = true;
+                    break;
+                case "unauto":
+                    autoCommit = false;
                     break;
             }
         } catch (Exception e) {
